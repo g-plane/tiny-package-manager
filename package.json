@@ -1,0 +1,32 @@
+{
+  "name": "tiny-package-manager",
+  "version": "1.0.0",
+  "description": "The tiny package manager.",
+  "main": "dist/index.js",
+  "repository": "https://github.com/g-plane/tiny-pm",
+  "author": "Pig Fang <g-plane@hotmail.com>",
+  "license": "MIT",
+  "private": false,
+  "scripts": {
+    "dev": "tsc -p . -w",
+    "build": "tsc -p .",
+    "start": "node dist/install.js",
+    "lint": "tslint --formatters-dir ./node_modules/tslint-formatter-beauty -t beauty -p ."
+  },
+  "dependencies": {
+    "mkdirp": "^0.5.1",
+    "node-fetch": "^2.2.0",
+    "semver": "^5.5.1",
+    "tar": "^4.4.6"
+  },
+  "devDependencies": {
+    "@types/mkdirp": "^0.5.2",
+    "@types/node-fetch": "^2.1.2",
+    "@types/semver": "^5.5.0",
+    "@types/tar": "^4.0.0",
+    "tslint": "^5.11.0",
+    "tslint-config-gplane": "^3.0.0-beta.2",
+    "tslint-formatter-beauty": "^3.0.0-beta.2",
+    "typescript": "^3.0.1"
+  }
+}
