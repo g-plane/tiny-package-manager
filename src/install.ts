@@ -3,6 +3,7 @@ import fetch from 'node-fetch'
 import * as tar from 'tar'
 import * as mkdirp from 'mkdirp'
 import resolve from './resolve'
+import * as log from './log'
 
 const makeDir = promisify(mkdirp)
 
@@ -25,4 +26,5 @@ export default async function (
   // so we don't need to create a file to disk,
   // and just extract the stuff directly.
   response.body.pipe(tar.extract({ cwd: path, strip: 1 }))
+    .on('close', log.tickInstalling)  // Update the progress bar
 }

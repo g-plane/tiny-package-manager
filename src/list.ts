@@ -1,5 +1,6 @@
 import * as semver from 'semver'
 import resolve from './resolve'
+import * as log from './log'
 
 type DependenciesMap = { [dependency: string]: string }
 
@@ -22,6 +23,8 @@ async function collectDeps(
 
   // Fetch the manifest information.
   const manifest = await resolve(name)
+  // Add currently resolving module to CLI
+  log.logResolving(name)
 
   // Use the latest version of a package
   // while it will conform the semantic version.

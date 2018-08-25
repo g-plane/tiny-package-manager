@@ -2,6 +2,7 @@ import { promisify } from 'util'
 import * as fs from 'fs'
 import list from './list'
 import install from './install'
+import * as log from './log'
 
 (async () => {
   // Read the `package.json` of current working directory.
@@ -11,10 +12,19 @@ import install from './install'
 
   // Generate the dependencies information.
   const info = await list(root)
+
+  // Prepare for the progress bar.
+  // Note that we re-compute the number of packages.
+  // Because of the duplication,
+  // number of resolved packages is not equivalent to
+  // the number of packages to be installed.
+  log.prepareInstall(info.topLevel.size + info.unsatisfied.length)
+
   // Install top level packages.
   await Promise.all(
     Array.from(info.topLevel.entries()).map(pair => install(...pair))
   )
+
   // Install packages which have conflicts.
   await Promise.all(
     info.unsatisfied.map(

@@ -14,14 +14,18 @@
     "lint": "tslint --formatters-dir ./node_modules/tslint-formatter-beauty -t beauty -p ."
   },
   "dependencies": {
+    "log-update": "^2.3.0",
     "mkdirp": "^0.5.1",
     "node-fetch": "^2.2.0",
+    "progress": "^2.0.0",
     "semver": "^5.5.1",
     "tar": "^4.4.6"
   },
   "devDependencies": {
+    "@types/log-update": "^2.0.0",
     "@types/mkdirp": "^0.5.2",
     "@types/node-fetch": "^2.1.2",
+    "@types/progress": "^2.0.1",
     "@types/semver": "^5.5.0",
     "@types/tar": "^4.0.0",
     "tslint": "^5.11.0",
