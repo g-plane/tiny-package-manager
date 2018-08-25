@@ -15,12 +15,8 @@ const unsatisfied: Array<{ name: string, parent: string, version: string }> = []
 async function collectDeps(
   name: string,
   constraint: string,
-  deep: string[] = []
+  deep: Array<{ name: string, dependencies: { [dep: string]: string } }> = []
 ) {
-  // The `deep` variable is to follow the depth of dependencies path,
-  // which is useful for handling dependencies conflicts.
-  deep = deep.slice()  // tslint:disable-line no-parameter-reassignment
-
   // Fetch the manifest information.
   const manifest = await resolve(name)
   // Add currently resolving module to CLI
@@ -44,7 +40,22 @@ async function collectDeps(
     // So we should add a record.
     unsatisfied.push({
       name,
-      parent: deep[deep.length - 1],
+      parent: deep[deep.length - 1].name,
+      version: matched
+    })
+  } else if (!checkDeepDependencies(name, matched, deep)) {
+    // Because of the module resolution algorithm of Node.js,
+    // there may be some conflicts in the dependencies of dependency.
+    // How to check it? See the `checkDeepDependencies` function below.
+    // ----------------------------
+    // We just need information of the last two dependencies of the stack.
+    // :(  Not sure if it's right.
+    unsatisfied.push({
+      name,
+      parent: deep
+        .map(({ name }) => name)
+        .slice(deep.length - 2)
+        .join('/node_modules/'),
       version: matched
     })
   }
@@ -52,13 +63,36 @@ async function collectDeps(
   // Don't forget to collect the dependencies of our dependencies.
   const dependencies = manifest[matched].dependencies
   if (dependencies) {
-    deep.push(name)  // depth + 1
+    // Collect the dependencies of dependency,
+    // so it's time to be deeper.
+    deep.push({ name, dependencies })
     await Promise.all(
       Object.entries(dependencies)
-        .map(([dep, range]) => collectDeps(dep, range, deep))
+        .map(([dep, range]) => collectDeps(dep, range, deep.slice()))
     )
     deep.pop()
   }
+}
+
+/**
+ * This function is to check if there are conflicts in the
+ * dependencies of dependency, not the top level dependencies.
+ */
+function checkDeepDependencies(
+  name: string,
+  version: string,
+  deep: Array<{ name: string, dependencies: { [dep: string]: string } }>
+) {
+  return deep.every(({ dependencies }) => {
+    // If this package is not as a dependency of another package,
+    // this is safe and we just return `true`.
+    if (!dependencies[name]) {
+      return true
+    }
+
+    // Semantic version checking.
+    return semver.satisfies(version, dependencies[name])
+  })
 }
 
 export default async function (rootManifest: {
