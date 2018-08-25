@@ -58,6 +58,10 @@ async function collectDeps(
         .join('/node_modules/'),
       version: matched
     })
+  } else {
+    // Remember to return this function to skip the dependencis checking.
+    // This will avoid dependencies circulation.
+    return
   }
 
   // Don't forget to collect the dependencies of our dependencies.
