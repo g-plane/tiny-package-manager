@@ -7,6 +7,9 @@
   "author": "Pig Fang <g-plane@hotmail.com>",
   "license": "MIT",
   "private": false,
+  "bin": {
+    "tiny-pm": "dist/cli.js"
+  },
   "scripts": {
     "dev": "tsc -p . -w",
     "build": "tsc -p .",
@@ -19,7 +22,8 @@
     "node-fetch": "^2.2.0",
     "progress": "^2.0.0",
     "semver": "^5.5.1",
-    "tar": "^4.4.6"
+    "tar": "^4.4.6",
+    "yargs": "^12.0.1"
   },
   "devDependencies": {
     "@types/log-update": "^2.0.0",
@@ -28,6 +32,7 @@
     "@types/progress": "^2.0.1",
     "@types/semver": "^5.5.0",
     "@types/tar": "^4.0.0",
+    "@types/yargs": "^11.1.1",
     "tslint": "^5.11.0",
     "tslint-config-gplane": "^3.0.0-beta.2",
     "tslint-formatter-beauty": "^3.0.0-beta.2",

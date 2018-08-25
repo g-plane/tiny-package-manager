@@ -4,11 +4,17 @@ import list from './list'
 import install from './install'
 import * as log from './log'
 
-(async () => {
+export default async function (production = false) {
   // Read the `package.json` of current working directory.
   const root = JSON.parse(
     await promisify(fs.readFile)('./package.json', 'utf-8')
   )
+
+  // In production mode,
+  // we just need to resolve production dependencies.
+  if (production) {
+    delete root.devDependencies
+  }
 
   // Generate the dependencies information.
   const info = await list(root)
@@ -31,4 +37,4 @@ import * as log from './log'
       item => install(item.name, item.version, `/node_modules/${item.parent}`)
     )
   )
-})()
+}
