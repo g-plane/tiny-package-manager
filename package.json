@@ -10,9 +10,13 @@
   "bin": {
     "tiny-pm": "dist/cli.js"
   },
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "dev": "tsc -p . -w",
     "build": "tsc -p .",
+    "prepublishOnly": "yarn build",
     "lint": "tslint --formatters-dir ./node_modules/tslint-formatter-beauty -t beauty -p ."
   },
   "dependencies": {
