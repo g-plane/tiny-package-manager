@@ -43,25 +43,29 @@ async function collectDeps(
       parent: deep[deep.length - 1].name,
       version: matched
     })
-  } else if (!checkDeepDependencies(name, matched, deep)) {
-    // Because of the module resolution algorithm of Node.js,
-    // there may be some conflicts in the dependencies of dependency.
-    // How to check it? See the `checkDeepDependencies` function below.
-    // ----------------------------
-    // We just need information of the last two dependencies of the stack.
-    // :(  Not sure if it's right.
-    unsatisfied.push({
-      name,
-      parent: deep
-        .map(({ name }) => name)
-        .slice(deep.length - 2)
-        .join('/node_modules/'),
-      version: matched
-    })
   } else {
-    // Remember to return this function to skip the dependencis checking.
-    // This will avoid dependencies circulation.
-    return
+    const conflictIndex = checkDeepDependencies(name, matched, deep)
+    if (conflictIndex !== -1) {
+      // Because of the module resolution algorithm of Node.js,
+      // there may be some conflicts in the dependencies of dependency.
+      // How to check it? See the `checkDeepDependencies` function below.
+      // ----------------------------
+      // We just need information of the previous **two** dependencies
+      // of the dependency which has conflicts.
+      // :(  Not sure if it's right.
+      unsatisfied.push({
+        name,
+        parent: deep
+          .map(({ name }) => name)
+          .slice(conflictIndex - 2)
+          .join('/node_modules/'),
+        version: matched
+      })
+    } else {
+      // Remember to return this function to skip the dependencis checking.
+      // This will avoid dependencies circulation.
+      return
+    }
   }
 
   // Don't forget to collect the dependencies of our dependencies.
@@ -87,7 +91,7 @@ function checkDeepDependencies(
   version: string,
   deep: Array<{ name: string, dependencies: { [dep: string]: string } }>
 ) {
-  return deep.every(({ dependencies }) => {
+  return deep.findIndex(({ dependencies }) => {
     // If this package is not as a dependency of another package,
     // this is safe and we just return `true`.
     if (!dependencies[name]) {
