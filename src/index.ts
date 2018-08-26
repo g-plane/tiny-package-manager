@@ -1,14 +1,11 @@
-import { promisify } from 'util'
-import * as fs from 'fs'
+import * as fs from 'fs-extra'
 import list from './list'
 import install from './install'
 import * as log from './log'
 
 export default async function (production = false) {
   // Read the `package.json` of current working directory.
-  const root = JSON.parse(
-    await promisify(fs.readFile)('./package.json', 'utf-8')
-  )
+  const root = await fs.readJson('./package.json')
 
   // In production mode,
   // we just need to resolve production dependencies.

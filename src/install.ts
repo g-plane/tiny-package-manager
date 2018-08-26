@@ -1,11 +1,8 @@
-import { promisify } from 'util'
 import fetch from 'node-fetch'
 import * as tar from 'tar'
-import * as mkdirp from 'mkdirp'
+import * as fs from 'fs-extra'
 import resolve from './resolve'
 import * as log from './log'
-
-const makeDir = promisify(mkdirp)
 
 export default async function (
   name: string,
@@ -17,8 +14,8 @@ export default async function (
   // Compute the tarball URL
   const url = (await resolve(name))[version].dist.tarball
 
-  // Make directories recursively.
-  await makeDir(path)
+  // Create directories recursively.
+  await fs.mkdirp(path)
 
   const response = await fetch(url)
   // The response body is a readable stream
