@@ -1,7 +1,7 @@
 import fetch from 'node-fetch'
 
 // Just type definition and this can be ignored.
-type Manifest = {
+export type Manifest = {
   [version: string]: {
     dependencies?: { [dep: string]: string }
     dist: { shasum: string, tarball: string }

@@ -1,18 +1,15 @@
 import fetch from 'node-fetch'
 import * as tar from 'tar'
 import * as fs from 'fs-extra'
-import resolve from './resolve'
 import * as log from './log'
 
 export default async function (
   name: string,
-  version: string,
+  url: string,
   location = ''
 ) {
   // Prepare for the directory which is for installation
   const path = `${process.cwd()}${location}/node_modules/${name}`
-  // Compute the tarball URL
-  const url = (await resolve(name))[version].dist.tarball
 
   // Create directories recursively.
   await fs.mkdirp(path)

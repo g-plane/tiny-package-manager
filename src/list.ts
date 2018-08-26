@@ -1,24 +1,33 @@
 import * as semver from 'semver'
 import resolve from './resolve'
 import * as log from './log'
+import * as lock from './lock'
 
 type DependenciesMap = { [dependency: string]: string }
 
 // The `topLevel` variable is to flatten packages tree
 // to avoid duplication.
-const topLevel: Map<string, string> = new Map()
+const topLevel: {
+  [name: string]: { url: string, version: string }
+} = Object.create(null)
 
 // However, there may be dependencies conflicts,
 // so this variable is for that.
-const unsatisfied: Array<{ name: string, parent: string, version: string }> = []
+const unsatisfied: Array<{ name: string, parent: string, url: string }> = []
 
 async function collectDeps(
   name: string,
   constraint: string,
   deep: Array<{ name: string, dependencies: { [dep: string]: string } }> = []
 ) {
+  // Retrieve a single manifest by name from the lock.
+  const fromLock = lock.getItem(name, constraint)
+
   // Fetch the manifest information.
-  const manifest = await resolve(name)
+  // If that manifest is not existed in the lock,
+  // fetch it from network.
+  const manifest = fromLock || await resolve(name)
+
   // Add currently resolving module to CLI
   log.logResolving(name)
 
@@ -29,19 +38,18 @@ async function collectDeps(
     throw new Error('Cannot resolve suitable package.')
   }
 
-  const existed = topLevel.get(name)
-  if (!existed) {
+  if (!topLevel[name]) {
     // If this package is not existed in the `topLevel` map,
     // just put it.
-    topLevel.set(name, matched)
-  } else if (!semver.satisfies(existed, constraint)) {
+    topLevel[name] = { url: manifest[matched].dist.tarball, version: matched }
+  } else if (!semver.satisfies(topLevel[name].version, constraint)) {
     // Yep, the package is already existed in that map,
     // but it has conflicts because of the semantic version.
     // So we should add a record.
     unsatisfied.push({
       name,
       parent: deep[deep.length - 1].name,
-      version: matched
+      url: manifest[matched].dist.tarball
     })
   } else {
     const conflictIndex = checkDeepDependencies(name, matched, deep)
@@ -59,7 +67,7 @@ async function collectDeps(
           .map(({ name }) => name)
           .slice(conflictIndex - 2)
           .join('/node_modules/'),
-        version: matched
+        url: manifest[matched].dist.tarball
       })
     } else {
       // Remember to return this function to skip the dependencis checking.
@@ -79,6 +87,16 @@ async function collectDeps(
         .map(([dep, range]) => collectDeps(dep, range, deep.slice()))
     )
     deep.pop()
+
+    // If the manifest is not existed in the lock, just save it.
+    if (!fromLock) {
+      lock.updateOrCreate(`${name}@${constraint}`, {
+        version: matched,
+        shasum: manifest[matched].dist.shasum,
+        url: manifest[matched].dist.tarball,
+        dependencies
+      })
+    }
   }
 }
 
