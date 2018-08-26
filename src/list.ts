@@ -121,6 +121,10 @@ function checkDeepDependencies(
   })
 }
 
+/**
+ * To simplify this guide,
+ * I intend to support `dependencies` and `devDependencies` fields only.
+ */
 export default async function (rootManifest: {
   dependencies?: DependenciesMap,
   devDependencies?: DependenciesMap
