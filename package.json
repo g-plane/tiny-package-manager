@@ -13,7 +13,6 @@
   "scripts": {
     "dev": "tsc -p . -w",
     "build": "tsc -p .",
-    "start": "node dist/install.js",
     "lint": "tslint --formatters-dir ./node_modules/tslint-formatter-beauty -t beauty -p ."
   },
   "dependencies": {
