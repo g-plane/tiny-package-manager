@@ -1,6 +1,6 @@
 {
   "name": "tiny-package-manager",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "The tiny package manager.",
   "main": "dist/index.js",
   "repository": "https://github.com/g-plane/tiny-pm",
