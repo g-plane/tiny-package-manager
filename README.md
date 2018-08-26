@@ -21,14 +21,14 @@ it's recommended to read the source code of [npm](https://github.com/npm/npm) or
 
 ## Features
 
-[x] Download packages to `node_modules` directory.
-[x] Simple CLI.
-[x] Simply resolve dependency conflicts.
-[x] Flatten dependencies tree.
-[x] Support lock file. (Like `yarn.lock` or `package-lock.json`)
-[ ] Add a new package through CLI. (Like `yarn add` or `npm i <package>` command)
-[ ] Run lifecycle scripts. (`preinstall` and `postinstall`)
-[ ] Symlink the `bin` files.
+- [x] Download packages to `node_modules` directory.
+- [x] Simple CLI.
+- [x] Simply resolve dependency conflicts.
+- [x] Flatten dependencies tree.
+- [x] Support lock file. (Like `yarn.lock` or `package-lock.json`)
+- [ ] Add a new package through CLI. (Like `yarn add` or `npm i <package>` command)
+- [ ] Run lifecycle scripts. (`preinstall` and `postinstall`)
+- [ ] Symlink the `bin` files.
 
 ## How to start?
 
