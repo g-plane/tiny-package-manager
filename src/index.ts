@@ -4,6 +4,30 @@ import install from './install'
 import * as log from './log'
 import * as lock from './lock'
 
+/**
+ * Welcome to learn about how to build a package manager.
+ * In this guide I will tell you how to build a
+ * very very simple package manager like npm or Yarn.
+ *
+ * I will use ES2017 syntax in this guide,
+ * so please make sure you know about it.
+ *
+ * Also this guide is written in TypeScript.
+ * Don't worry if you don't know TypeScript,
+ * just treat it as JavaScript with some type annotations.
+ * If you have leart Flow, that's great,
+ * because they are similar.
+ *
+ * To make this guide as simple as possible,
+ * I haven't handled some edge cases.
+ *
+ * Good luck and let's start!   :)
+ *
+ * This is just the main file of the whole tiny package manager,
+ * but not all the logic,
+ * because I split them into different modules and files for better management.
+ */
+
 export default async function (production = false) {
   // Read the `package.json` of current working directory.
   const root = await fs.readJson('./package.json')
@@ -45,4 +69,6 @@ export default async function (production = false) {
       item => install(item.name, item.url, `/node_modules/${item.parent}`)
     )
   )
+
+  // That's all! Everything should be finished if no errors occurred.
 }
