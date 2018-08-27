@@ -17,7 +17,8 @@
     "dev": "tsc -p . -w",
     "build": "tsc -p .",
     "prepublishOnly": "yarn build",
-    "lint": "tslint --formatters-dir ./node_modules/tslint-formatter-beauty -t beauty -p ."
+    "lint": "tslint --formatters-dir ./node_modules/tslint-formatter-beauty -t beauty -p .",
+    "test": "yarn lint"
   },
   "dependencies": {
     "fs-extra": "^7.0.0",
