@@ -77,26 +77,27 @@ async function collectDeps(
   }
 
   // Don't forget to collect the dependencies of our dependencies.
-  const dependencies = manifest[matched].dependencies
+  const dependencies = manifest[matched].dependencies || null
+
+  // If the manifest is not existed in the lock, just save it.
+  if (!fromLock) {
+    lock.updateOrCreate(`${name}@${constraint}`, {
+      version: matched,
+      url: manifest[matched].dist.tarball,
+      shasum: manifest[matched].dist.shasum,
+      dependencies
+    })
+  }
+
   if (dependencies) {
     // Collect the dependencies of dependency,
     // so it's time to be deeper.
     deep.push({ name, dependencies })
     await Promise.all(
       Object.entries(dependencies)
-        .map(([dep, range]) => collectDeps(dep, range, deep.slice()))
+      .map(([dep, range]) => collectDeps(dep, range, deep.slice()))
     )
     deep.pop()
-
-    // If the manifest is not existed in the lock, just save it.
-    if (!fromLock) {
-      lock.updateOrCreate(`${name}@${constraint}`, {
-        version: matched,
-        shasum: manifest[matched].dist.shasum,
-        url: manifest[matched].dist.tarball,
-        dependencies
-      })
-    }
   }
 }
 

@@ -64,9 +64,20 @@ export function getItem(name: string, constraint: string): Manifest | null {
  * Simply save the lock file.
  */
 export async function writeLock() {
+  // Sort the keys of the lock.
+  // This is necessary because each time you use the package manager,
+  // the order will not be same.
+  // Sort it makes useful for git diff.
+  const sorted = Object.keys(lock)
+    .sort()
+    .reduce((total: Lock, current) => {
+      total[current] = lock[current]
+      return total
+    }, {})
+
   await fs.writeFile(
     './tiny-pm.yml',
-    yaml.safeDump(lock, { noRefs: true, sortKeys: true })
+    yaml.safeDump(sorted, { noRefs: true })
   )
 }
 
