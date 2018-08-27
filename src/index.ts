@@ -1,4 +1,5 @@
 import * as fs from 'fs-extra'
+import * as findUp from 'find-up'
 import list from './list'
 import install from './install'
 import * as log from './log'
@@ -29,8 +30,8 @@ import * as lock from './lock'
  */
 
 export default async function (production = false) {
-  // Read the `package.json` of current working directory.
-  const root = await fs.readJson('./package.json')
+  // Find and read the `package.json`.
+  const root = await fs.readJson((await findUp('package.json')) || '{}')
 
   // In production mode,
   // we just need to resolve production dependencies.

@@ -10,6 +10,10 @@
     esutils "^2.0.2"
     js-tokens "^4.0.0"
 
+"@types/find-up@^2.1.1":
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/@types/find-up/-/find-up-2.1.1.tgz#1cd2d240f1ad1f48d32346074724dc3107248a11"
+
 "@types/fs-extra@^5.0.4":
   version "5.0.4"
   resolved "https://registry.yarnpkg.com/@types/fs-extra/-/fs-extra-5.0.4.tgz#b971134d162cc0497d221adde3dbb67502225599"
