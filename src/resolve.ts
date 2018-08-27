@@ -13,7 +13,7 @@ const REGISTRY = process.env.REGISTRY || 'https://registry.npmjs.org/'
 
 // Use cache to prevent duplicated network request,
 // when asking the same package.
-const cache: { [dep: string]: Manifest } = {}
+const cache: { [dep: string]: Manifest } = Object.create(null)
 
 export default async function (name: string): Promise<Manifest> {
   // If the requested package manifest is existed in cache,
