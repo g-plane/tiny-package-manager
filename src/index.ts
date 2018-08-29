@@ -31,7 +31,7 @@ import * as lock from './lock'
 
 export default async function (production = false) {
   // Find and read the `package.json`.
-  const root = await fs.readJson((await findUp('package.json')) || '{}')
+  const root = await fs.readJson((await findUp('package.json'))!)
 
   // In production mode,
   // we just need to resolve production dependencies.
