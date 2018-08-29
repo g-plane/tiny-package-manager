@@ -1,8 +1,4 @@
 {
   "defaultSeverity": "error",
-  "extends": "tslint-config-gplane",
-  "rules": {
-    "interface-over-type-literal": false,
-    "no-bitwise": false
-  }
+  "extends": "tslint-config-gplane"
 }
