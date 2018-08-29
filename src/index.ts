@@ -1,5 +1,6 @@
 import * as fs from 'fs-extra'
 import * as findUp from 'find-up'
+import * as yargs from 'yargs'
 import list from './list'
 import install from './install'
 import * as log from './log'
@@ -29,13 +30,13 @@ import * as lock from './lock'
  * because I split them into different modules and files for better management.
  */
 
-export default async function (production = false) {
+export default async function (args: yargs.Arguments) {
   // Find and read the `package.json`.
   const root = await fs.readJson((await findUp('package.json'))!)
 
   // In production mode,
   // we just need to resolve production dependencies.
-  if (production) {
+  if (args.production) {
     delete root.devDependencies
   }
 

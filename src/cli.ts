@@ -19,7 +19,7 @@ yargs
       type: 'boolean',
       description: 'Install production dependencies only.'
     }),
-    argv => pm(argv.production)
+    pm
   )
   .command(
     '*',
@@ -28,6 +28,6 @@ yargs
       type: 'boolean',
       description: 'Install production dependencies only.'
     }),
-    argv => pm(argv.production)
+    pm
   )
   .parse()
