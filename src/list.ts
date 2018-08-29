@@ -84,15 +84,13 @@ async function collectDeps(
   // Don't forget to collect the dependencies of our dependencies.
   const dependencies = manifest[matched].dependencies || null
 
-  // If the manifest is not existed in the lock, just save it.
-  if (!fromLock) {
-    lock.updateOrCreate(`${name}@${constraint}`, {
-      version: matched,
-      url: manifest[matched].dist.tarball,
-      shasum: manifest[matched].dist.shasum,
-      dependencies
-    })
-  }
+  // Save the manifest to the new lock.
+  lock.updateOrCreate(`${name}@${constraint}`, {
+    version: matched,
+    url: manifest[matched].dist.tarball,
+    shasum: manifest[matched].dist.shasum,
+    dependencies
+  })
 
   // Collect the dependencies of dependency,
   // so it's time to be deeper.

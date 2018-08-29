@@ -12,8 +12,24 @@ interface Lock {
   }
 }
 
-// Yep, this is the lock.
-const lock: Lock = Object.create(null)
+// ------------ The LOCK is here. ---------------------
+
+// Why we use two separated locks?
+// This is useful when removing packages.
+// When adding or removing packages,
+// the lock file can be updated automatically without any manual operations.
+
+// This is the old lock.
+// The old lock is only for reading from the lock file,
+// so the old lock should be read only except reading the lock file.
+const oldLock: Lock = Object.create(null)
+
+// This is the new lock.
+// The new lock is only for writing to the lock file,
+// so the new lock should be written only except saving the lock file.
+const newLock: Lock = Object.create(null)
+
+// ----------------------------------------------------
 
 /**
  * Save the information of a package to the lock.
@@ -22,12 +38,12 @@ const lock: Lock = Object.create(null)
  */
 export function updateOrCreate(name: string, info: object) {
   // Create it if that information is not existed in the lock.
-  if (!lock[name]) {
-    lock[name] = Object.create(null)
+  if (!newLock[name]) {
+    newLock[name] = Object.create(null)
   }
 
   // Then update it.
-  Object.assign(lock[name], info)
+  Object.assign(newLock[name], info)
 }
 
 /**
@@ -44,7 +60,7 @@ export function updateOrCreate(name: string, info: object) {
 export function getItem(name: string, constraint: string): Manifest | null {
   // Retrieve an item by a key from the lock.
   // The format of the key is similar and inspired by Yarn's `yarn.lock` file.
-  const item = lock[`${name}@${constraint}`]
+  const item = oldLock[`${name}@${constraint}`]
 
   // Return `null` instead of `undefined` if we cannot find that.
   if (!item) {
@@ -68,10 +84,10 @@ export async function writeLock() {
   // This is necessary because each time you use the package manager,
   // the order will not be same.
   // Sort it makes useful for git diff.
-  const sorted = Object.keys(lock)
+  const sorted = Object.keys(newLock)
     .sort()
     .reduce((total: Lock, current) => {
-      total[current] = lock[current]
+      total[current] = newLock[current]
       return total
     }, Object.create(null))
 
@@ -88,7 +104,7 @@ export async function writeLock() {
 export async function readLock() {
   if (await fs.pathExists('./tiny-pm.yml')) {
     Object.assign(
-      lock,
+      oldLock,
       yaml.safeLoad(await fs.readFile('./tiny-pm.yml', 'utf-8'))
     )
   }
