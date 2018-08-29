@@ -73,7 +73,7 @@ export async function writeLock() {
     .reduce((total: Lock, current) => {
       total[current] = lock[current]
       return total
-    }, {})
+    }, Object.create(null))
 
   await fs.writeFile(
     './tiny-pm.yml',
