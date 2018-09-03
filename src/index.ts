@@ -1,7 +1,8 @@
 import * as fs from 'fs-extra'
 import * as findUp from 'find-up'
 import * as yargs from 'yargs'
-import list from './list'
+import * as utils from './utils'
+import list, { PackageJson } from './list'
 import install from './install'
 import * as log from './log'
 import * as lock from './lock'
@@ -32,7 +33,26 @@ import * as lock from './lock'
 
 export default async function (args: yargs.Arguments) {
   // Find and read the `package.json`.
-  const root = await fs.readJson((await findUp('package.json'))!)
+  const jsonPath = (await findUp('package.json'))!
+  const root = await fs.readJson(jsonPath)
+
+  // If we are adding new packages by running `tiny-pm install <packageName>`,
+  // collect them through CLI arguments.
+  // This purpose is to behaves like `npm i <packageName>` or `yarn add`.
+  const additionalPackages = args._.slice(1)
+  if (additionalPackages.length) {
+    if (args['save-dev'] || args.dev) {
+      root.devDependencies = root.devDependencies || {}
+      // At this time we don't specific version now, so set it empty.
+      // And we will fill it later after fetched the information.
+      additionalPackages.forEach(pkg => root.devDependencies[pkg] = '')
+    } else {
+      root.dependencies = root.dependencies || {}
+      // At this time we don't specific version now, so set it empty.
+      // And we will fill it later after fetched the information.
+      additionalPackages.forEach(pkg => root.dependencies[pkg] = '')
+    }
+  }
 
   // In production mode,
   // we just need to resolve production dependencies.
@@ -72,5 +92,23 @@ export default async function (args: yargs.Arguments) {
     )
   )
 
+  beautifyPackageJson(root)
+
+  // Save the `package.json` file.
+  fs.writeJson(jsonPath, root, { spaces: 2 })
+
   // That's all! Everything should be finished if no errors occurred.
+}
+
+/**
+ * Beautify the `dependencies` field and `devDependencies` field.
+ */
+function beautifyPackageJson(packageJson: PackageJson) {
+  if (packageJson.dependencies) {
+    packageJson.dependencies = utils.sortKeys(packageJson.dependencies)
+  }
+
+  if (packageJson.devDependencies) {
+    packageJson.devDependencies = utils.sortKeys(packageJson.devDependencies)
+  }
 }

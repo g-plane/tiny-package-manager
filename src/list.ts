@@ -9,6 +9,10 @@ type DependencyStack = Array<{
   version: string,
   dependencies: { [dep: string]: string }
 }>
+export type PackageJson = {
+  dependencies?: DependenciesMap,
+  devDependencies?: DependenciesMap
+}
 
 // The `topLevel` variable is to flatten packages tree
 // to avoid duplication.
@@ -38,7 +42,12 @@ async function collectDeps(
 
   // Use the latest version of a package
   // while it will conform the semantic version.
-  const matched = semver.maxSatisfying(Object.keys(manifest), constraint)
+  // However, if no semantic version is specified,
+  // use the latest version.
+  const versions = Object.keys(manifest)
+  const matched = constraint
+    ? semver.maxSatisfying(versions, constraint)
+    : versions[versions.length - 1]  // The last one is the latest.
   if (!matched) {
     throw new Error('Cannot resolve suitable package.')
   }
@@ -104,6 +113,12 @@ async function collectDeps(
     )
     stack.pop()
   }
+
+  // Return the semantic version range to
+  // add missing semantic version range in `package.json`.
+  if (!constraint) {
+    return { name, version: `^${matched}` }
+  }
 }
 
 /**
@@ -143,24 +158,30 @@ function hasCirculation(name: string, range: string, stack: DependencyStack) {
  * To simplify this guide,
  * I intend to support `dependencies` and `devDependencies` fields only.
  */
-export default async function (rootManifest: {
-  dependencies?: DependenciesMap,
-  devDependencies?: DependenciesMap
-}) {
+export default async function (rootManifest: PackageJson) {
+  // For both production dependencies and development dependencies,
+  // if the package name and the semantic version are returned,
+  // we should add them to the `package.json` file.
+  // This is necessary when adding new packages.
+
   // Process production dependencies
   if (rootManifest.dependencies) {
-    await Promise.all(
+    (await Promise.all(
       Object.entries(rootManifest.dependencies)
         .map(pair => collectDeps(...pair))
-    )
+    )).filter(Boolean)
+      .forEach(item => rootManifest.dependencies![item!.name] = item!.version)
   }
 
   // Process development dependencies
   if (rootManifest.devDependencies) {
-    await Promise.all(
+    (await Promise.all(
       Object.entries(rootManifest.devDependencies)
         .map(pair => collectDeps(...pair))
-    )
+    )).filter(Boolean)
+      .forEach(
+        item => rootManifest.devDependencies![item!.name] = item!.version
+      )
   }
 
   return { topLevel, unsatisfied }
