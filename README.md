@@ -10,7 +10,7 @@ often.
 However, do you know how a package manager works? Or, you may be curious about how to build a package manager.
 
 Well, the purpose of this guide is not to let you re-invent a new wheel.
-There is no need to do that because both npm and Yarn are muture and stable enough.
+There is no need to do that because both npm and Yarn are mature and stable enough.
 The purpose is just to explain how a package manager works under the hood.
 You can read the code, and the comments will explain how it works.
 
