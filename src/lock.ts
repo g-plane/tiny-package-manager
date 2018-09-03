@@ -1,5 +1,6 @@
 import * as fs from 'fs-extra'
 import * as yaml from 'js-yaml'
+import * as utils from './utils'
 import { Manifest } from './resolve'
 
 // Define the type of the lock tree.
@@ -80,20 +81,13 @@ export function getItem(name: string, constraint: string): Manifest | null {
  * Simply save the lock file.
  */
 export async function writeLock() {
-  // Sort the keys of the lock.
+  // Sort the keys of the lock before save it.
   // This is necessary because each time you use the package manager,
   // the order will not be same.
   // Sort it makes useful for git diff.
-  const sorted = Object.keys(newLock)
-    .sort()
-    .reduce((total: Lock, current) => {
-      total[current] = newLock[current]
-      return total
-    }, Object.create(null))
-
   await fs.writeFile(
     './tiny-pm.yml',
-    yaml.safeDump(sorted, { noRefs: true })
+    yaml.safeDump(utils.sortKeys(newLock), { noRefs: true })
   )
 }
 
