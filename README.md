@@ -5,7 +5,7 @@
 ## Introduction
 
 As a JavaScript developer, you may use package manager like [npm](https://www.npmjs.com/) or [Yarn](https://yarnpkg.com/)
-often.
+frequently.
 
 However, do you know how a package manager works? Or, you may be curious about how to build a package manager.
 
