@@ -16,9 +16,9 @@
   "scripts": {
     "dev": "tsc -p . -w",
     "build": "tsc -p .",
-    "prepublishOnly": "yarn build",
-    "lint": "tslint --formatters-dir ./node_modules/tslint-formatter-beauty -t beauty -p .",
-    "test": "yarn lint"
+    "prepublishOnly": "npm run build",
+    "lint": "eslint . -f=beauty --ext=.ts",
+    "test": "npm run lint"
   },
   "dependencies": {
     "find-up": "^3.0.0",
@@ -32,6 +32,7 @@
     "yargs": "^12.0.1"
   },
   "devDependencies": {
+    "@gplane/tsconfig": "^1.0.0",
     "@types/find-up": "^2.1.1",
     "@types/fs-extra": "^5.0.4",
     "@types/js-yaml": "^3.11.2",
@@ -41,9 +42,11 @@
     "@types/semver": "^5.5.0",
     "@types/tar": "^4.0.0",
     "@types/yargs": "^11.1.1",
-    "tslint": "^5.11.0",
-    "tslint-config-gplane": "^3.0.0-beta.5",
-    "tslint-formatter-beauty": "^3.0.0-beta.2",
-    "typescript": "^3.0.1"
+    "@typescript-eslint/eslint-plugin": "^1.4.2",
+    "@typescript-eslint/parser": "^1.4.2",
+    "eslint": "^5.15.0",
+    "eslint-config-gplane": "^5.1.2",
+    "eslint-formatter-beauty": "^3.0.0",
+    "typescript": "^3.3.3333"
   }
 }

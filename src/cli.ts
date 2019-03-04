@@ -2,9 +2,11 @@
 import * as yargs from 'yargs'
 import pm from '.'
 
-// This file is for CLI usage.
-// There isn't too much logic about package manager here.
-// For details please consult the documentation of `yargs` module.
+/*
+ * This file is for CLI usage.
+ * There isn't too much logic about package manager here.
+ * For details please consult the documentation of `yargs` module.
+ */
 
 yargs
   .usage('tiny-pm <command> [args]')
@@ -18,7 +20,7 @@ yargs
     argv => {
       argv.option('production', {
         type: 'boolean',
-        description: 'Install production dependencies only.'
+        description: 'Install production dependencies only.',
       })
 
       argv.boolean('save-dev')
@@ -34,7 +36,7 @@ yargs
     'Install the dependencies.',
     argv => argv.option('production', {
       type: 'boolean',
-      description: 'Install production dependencies only.'
+      description: 'Install production dependencies only.',
     }),
     pm
   )

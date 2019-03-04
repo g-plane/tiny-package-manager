@@ -1,7 +1,7 @@
 import fetch from 'node-fetch'
 
 // Just type definition and this can be ignored.
-export type Manifest = {
+export interface Manifest {
   [version: string]: {
     dependencies?: { [dep: string]: string }
     dist: { shasum: string, tarball: string }
@@ -11,13 +11,17 @@ export type Manifest = {
 // This allows us use a custom npm registry.
 const REGISTRY = process.env.REGISTRY || 'https://registry.npmjs.org/'
 
-// Use cache to prevent duplicated network request,
-// when asking the same package.
+/*
+ * Use cache to prevent duplicated network request,
+ * when asking the same package.
+ */
 const cache: { [dep: string]: Manifest } = Object.create(null)
 
 export default async function (name: string): Promise<Manifest> {
-  // If the requested package manifest is existed in cache,
-  // just return it directly.
+  /*
+   * If the requested package manifest is existed in cache,
+   * just return it directly.
+   */
   if (cache[name]) {
     return cache[name]
   }
@@ -30,5 +34,5 @@ export default async function (name: string): Promise<Manifest> {
   }
 
   // Add the manifest info to cache and return it.
-  return cache[name] = json.versions
+  return (cache[name] = json.versions)
 }

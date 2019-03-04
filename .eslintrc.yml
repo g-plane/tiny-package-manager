@@ -1,0 +1,3 @@
+extends:
+  - gplane
+  - gplane/typescript

@@ -15,19 +15,25 @@ interface Lock {
 
 // ------------ The LOCK is here. ---------------------
 
-// Why we use two separated locks?
-// This is useful when removing packages.
-// When adding or removing packages,
-// the lock file can be updated automatically without any manual operations.
+/*
+ * Why we use two separated locks?
+ * This is useful when removing packages.
+ * When adding or removing packages,
+ * the lock file can be updated automatically without any manual operations.
+ */
 
-// This is the old lock.
-// The old lock is only for reading from the lock file,
-// so the old lock should be read only except reading the lock file.
+/*
+ * This is the old lock.
+ * The old lock is only for reading from the lock file,
+ * so the old lock should be read only except reading the lock file.
+ */
 const oldLock: Lock = Object.create(null)
 
-// This is the new lock.
-// The new lock is only for writing to the lock file,
-// so the new lock should be written only except saving the lock file.
+/*
+ * This is the new lock.
+ * The new lock is only for writing to the lock file,
+ * so the new lock should be written only except saving the lock file.
+ */
 const newLock: Lock = Object.create(null)
 
 // ----------------------------------------------------
@@ -59,8 +65,10 @@ export function updateOrCreate(name: string, info: object) {
  * function in the `list` module.
  */
 export function getItem(name: string, constraint: string): Manifest | null {
-  // Retrieve an item by a key from the lock.
-  // The format of the key is similar and inspired by Yarn's `yarn.lock` file.
+  /*
+   * Retrieve an item by a key from the lock.
+   * The format of the key is similar and inspired by Yarn's `yarn.lock` file.
+   */
   const item = oldLock[`${name}@${constraint}`]
 
   // Return `null` instead of `undefined` if we cannot find that.
@@ -72,8 +80,8 @@ export function getItem(name: string, constraint: string): Manifest | null {
   return {
     [item.version]: {
       dependencies: item.dependencies,
-      dist: { shasum: item.shasum, tarball: item.url }
-    }
+      dist: { shasum: item.shasum, tarball: item.url },
+    },
   }
 }
 
@@ -81,10 +89,12 @@ export function getItem(name: string, constraint: string): Manifest | null {
  * Simply save the lock file.
  */
 export async function writeLock() {
-  // Sort the keys of the lock before save it.
-  // This is necessary because each time you use the package manager,
-  // the order will not be same.
-  // Sort it makes useful for git diff.
+  /*
+   * Sort the keys of the lock before save it.
+   * This is necessary because each time you use the package manager,
+   * the order will not be same.
+   * Sort it makes useful for git diff.
+   */
   await fs.writeFile(
     './tiny-pm.yml',
     yaml.safeDump(utils.sortKeys(newLock), { noRefs: true })

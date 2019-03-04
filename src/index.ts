@@ -36,26 +36,34 @@ export default async function (args: yargs.Arguments) {
   const jsonPath = (await findUp('package.json'))!
   const root = await fs.readJson(jsonPath)
 
-  // If we are adding new packages by running `tiny-pm install <packageName>`,
-  // collect them through CLI arguments.
-  // This purpose is to behaves like `npm i <packageName>` or `yarn add`.
+  /*
+   * If we are adding new packages by running `tiny-pm install <packageName>`,
+   * collect them through CLI arguments.
+   * This purpose is to behaves like `npm i <packageName>` or `yarn add`.
+   */
   const additionalPackages = args._.slice(1)
   if (additionalPackages.length) {
     if (args['save-dev'] || args.dev) {
       root.devDependencies = root.devDependencies || {}
-      // At this time we don't specific version now, so set it empty.
-      // And we will fill it later after fetched the information.
-      additionalPackages.forEach(pkg => root.devDependencies[pkg] = '')
+      /*
+       * At this time we don't specific version now, so set it empty.
+       * And we will fill it later after fetched the information.
+       */
+      additionalPackages.forEach(pkg => (root.devDependencies[pkg] = ''))
     } else {
       root.dependencies = root.dependencies || {}
-      // At this time we don't specific version now, so set it empty.
-      // And we will fill it later after fetched the information.
-      additionalPackages.forEach(pkg => root.dependencies[pkg] = '')
+      /*
+       * At this time we don't specific version now, so set it empty.
+       * And we will fill it later after fetched the information.
+       */
+      additionalPackages.forEach(pkg => (root.dependencies[pkg] = ''))
     }
   }
 
-  // In production mode,
-  // we just need to resolve production dependencies.
+  /*
+   * In production mode,
+   * we just need to resolve production dependencies.
+   */
   if (args.production) {
     delete root.devDependencies
   }
@@ -69,11 +77,13 @@ export default async function (args: yargs.Arguments) {
   // Save the lock file asynchronously.
   lock.writeLock()
 
-  // Prepare for the progress bar.
-  // Note that we re-compute the number of packages.
-  // Because of the duplication,
-  // number of resolved packages is not equivalent to
-  // the number of packages to be installed.
+  /*
+   * Prepare for the progress bar.
+   * Note that we re-compute the number of packages.
+   * Because of the duplication,
+   * number of resolved packages is not equivalent to
+   * the number of packages to be installed.
+   */
   log.prepareInstall(
     Object.keys(info.topLevel).length + info.unsatisfied.length
   )
