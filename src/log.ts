@@ -1,5 +1,5 @@
-import * as logUpdate from 'log-update'
-import * as ProgressBar from 'progress'
+import logUpdate from 'log-update'
+import ProgressBar from 'progress'
 
 let progress: ProgressBar
 

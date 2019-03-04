@@ -1,6 +1,6 @@
 import * as fs from 'fs-extra'
-import * as findUp from 'find-up'
-import * as yargs from 'yargs'
+import findUp from 'find-up'
+import yargs from 'yargs'
 import * as utils from './utils'
 import list, { PackageJson } from './list'
 import install from './install'

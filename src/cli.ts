@@ -1,5 +1,4 @@
-#!/usr/bin/env node
-import * as yargs from 'yargs'
+import yargs from 'yargs'
 import pm from '.'
 
 /*

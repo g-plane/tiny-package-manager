@@ -1,3 +1,4 @@
 extends:
   - gplane
+  - gplane/node
   - gplane/typescript

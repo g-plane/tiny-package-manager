@@ -20,6 +20,9 @@
     "lint": "eslint . -f=beauty --ext=.ts",
     "test": "npm run lint"
   },
+  "engines": {
+    "node": ">8"
+  },
   "dependencies": {
     "find-up": "^3.0.0",
     "fs-extra": "^7.0.0",

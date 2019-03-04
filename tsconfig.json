@@ -1,6 +1,7 @@
 {
   "extends": "@gplane/tsconfig",
   "compilerOptions": {
+    "target": "es2017",
     "outDir": "dist"
   }
 }
