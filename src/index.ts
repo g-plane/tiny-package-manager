@@ -8,7 +8,7 @@ import * as log from './log'
 import * as lock from './lock'
 
 /**
- * Welcome to learn about how to build a package manager.
+ * Welcome to learning about how to build a package manager.
  * In this guide I will tell you how to build a
  * very very simple package manager like npm or Yarn.
  *
@@ -18,7 +18,7 @@ import * as lock from './lock'
  * Also this guide is written in TypeScript.
  * Don't worry if you don't know TypeScript,
  * just treat it as JavaScript with some type annotations.
- * If you have leart Flow, that's great,
+ * If you have learned Flow, that's great,
  * because they are similar.
  *
  * To make this guide as simple as possible,
@@ -27,7 +27,7 @@ import * as lock from './lock'
  * Good luck and let's start!   :)
  *
  * This is just the main file of the whole tiny package manager,
- * but not all the logic,
+ * but not all of the logic,
  * because I split them into different modules and files for better management.
  */
 
