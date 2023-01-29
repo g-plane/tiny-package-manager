@@ -5,6 +5,7 @@
   "main": "dist/index.js",
   "repository": "g-plane/tiny-package-manager",
   "author": "Pig Fang <g-plane@hotmail.com>",
+  "license": "MIT",
   "private": false,
   "bin": {
     "tiny-pm": "dist/cli.js"
