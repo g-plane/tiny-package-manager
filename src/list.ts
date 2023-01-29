@@ -22,14 +22,14 @@ export interface PackageJson {
  * to avoid duplication.
  */
 const topLevel: {
-  [name: string]: { url: string, version: string }
+  [name: string]: { url: string; version: string }
 } = Object.create(null)
 
 /*
  * However, there may be dependencies conflicts,
  * so this variable is for that.
  */
-const unsatisfied: Array<{ name: string, parent: string, url: string }> = []
+const unsatisfied: Array<{ name: string; parent: string; url: string }> = []
 
 async function collectDeps(
   name: string,
@@ -44,7 +44,7 @@ async function collectDeps(
    * If that manifest is not existed in the lock,
    * fetch it from network.
    */
-  const manifest = fromLock || await resolve(name)
+  const manifest = fromLock || (await resolve(name))
 
   // Add currently resolving module to CLI
   log.logResolving(name)
@@ -63,13 +63,15 @@ async function collectDeps(
     throw new Error('Cannot resolve suitable package.')
   }
 
+  const matchedManifest = manifest[matched]!
+
   if (!topLevel[name]) {
     /*
      * If this package is not existed in the `topLevel` map,
      * just put it.
      */
-    topLevel[name] = { url: manifest[matched].dist.tarball, version: matched }
-  } else if (semver.satisfies(topLevel[name].version, constraint)) {
+    topLevel[name] = { url: matchedManifest.dist.tarball, version: matched }
+  } else if (semver.satisfies(topLevel[name]!.version, constraint)) {
     const conflictIndex = checkStackDependencies(name, matched, stack)
     if (conflictIndex === -1) {
       /*
@@ -93,7 +95,7 @@ async function collectDeps(
         .map(({ name }) => name) // eslint-disable-line no-shadow
         .slice(conflictIndex - 2)
         .join('/node_modules/'),
-      url: manifest[matched].dist.tarball,
+      url: matchedManifest.dist.tarball,
     })
   } else {
     /*
@@ -103,19 +105,19 @@ async function collectDeps(
      */
     unsatisfied.push({
       name,
-      parent: stack[stack.length - 1].name,
-      url: manifest[matched].dist.tarball,
+      parent: stack.at(-1)!.name,
+      url: matchedManifest.dist.tarball,
     })
   }
 
   // Don't forget to collect the dependencies of our dependencies.
-  const dependencies = manifest[matched].dependencies || null
+  const dependencies = matchedManifest.dependencies ?? {}
 
   // Save the manifest to the new lock.
   lock.updateOrCreate(`${name}@${constraint}`, {
     version: matched,
-    url: manifest[matched].dist.tarball,
-    shasum: manifest[matched].dist.shasum,
+    url: matchedManifest.dist.tarball,
+    shasum: matchedManifest.dist.shasum,
     dependencies,
   })
 
@@ -125,7 +127,9 @@ async function collectDeps(
    */
   if (dependencies) {
     stack.push({
-      name, version: matched, dependencies,
+      name,
+      version: matched,
+      dependencies,
     })
     await Promise.all(
       Object.entries(dependencies)
@@ -155,16 +159,17 @@ function checkStackDependencies(
   stack: DependencyStack
 ) {
   return stack.findIndex(({ dependencies }) => {
+    const semverRange = dependencies[name]
     /*
      * If this package is not as a dependency of another package,
      * this is safe and we just return `true`.
      */
-    if (!dependencies[name]) {
+    if (!semverRange) {
       return true
     }
 
     // Semantic version checking.
-    return semver.satisfies(version, dependencies[name])
+    return semver.satisfies(version, semverRange)
   })
 }
 
@@ -176,7 +181,7 @@ function checkStackDependencies(
  */
 function hasCirculation(name: string, range: string, stack: DependencyStack) {
   return stack.some(
-    item => item.name === name && semver.satisfies(item.version, range)
+    (item) => item.name === name && semver.satisfies(item.version, range)
   )
 }
 
@@ -194,21 +199,31 @@ export default async function (rootManifest: PackageJson) {
 
   // Process production dependencies
   if (rootManifest.dependencies) {
-    (await Promise.all(
-      Object.entries(rootManifest.dependencies)
-        .map(pair => collectDeps(...pair))
-    )).filter(Boolean)
-      .forEach(item => (rootManifest.dependencies![item!.name] = item!.version))
+    ;(
+      await Promise.all(
+        Object.entries(rootManifest.dependencies).map((pair) =>
+          collectDeps(...pair)
+        )
+      )
+    )
+      .filter(Boolean)
+      .forEach(
+        (item) => (rootManifest.dependencies![item!.name] = item!.version)
+      )
   }
 
   // Process development dependencies
   if (rootManifest.devDependencies) {
-    (await Promise.all(
-      Object.entries(rootManifest.devDependencies)
-        .map(pair => collectDeps(...pair))
-    )).filter(Boolean)
+    ;(
+      await Promise.all(
+        Object.entries(rootManifest.devDependencies).map((pair) =>
+          collectDeps(...pair)
+        )
+      )
+    )
+      .filter(Boolean)
       .forEach(
-        item => (rootManifest.devDependencies![item!.name] = item!.version)
+        (item) => (rootManifest.devDependencies![item!.name] = item!.version)
       )
   }
 

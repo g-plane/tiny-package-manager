@@ -1,7 +1,8 @@
 {
   "extends": "@gplane/tsconfig",
   "compilerOptions": {
-    "target": "es2017",
+    "target": "es2020",
+    "module": "commonjs",
     "outDir": "dist"
   }
 }

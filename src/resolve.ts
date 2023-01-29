@@ -4,7 +4,7 @@ import fetch from 'node-fetch'
 export interface Manifest {
   [version: string]: {
     dependencies?: { [dep: string]: string }
-    dist: { shasum: string, tarball: string }
+    dist: { shasum: string; tarball: string }
   }
 }
 
@@ -22,14 +22,17 @@ export default async function (name: string): Promise<Manifest> {
    * If the requested package manifest is existed in cache,
    * just return it directly.
    */
-  if (cache[name]) {
-    return cache[name]
+  const cached = cache[name]
+  if (cached) {
+    return cached
   }
 
   const response = await fetch(`${REGISTRY}${name}`)
 
-  const json = await response.json()
-  if (json.error) {
+  const json = (await response.json()) as
+    | { error: string }
+    | { versions: Manifest }
+  if ('error' in json) {
     throw new ReferenceError(`No such package: ${name}`)
   }
 

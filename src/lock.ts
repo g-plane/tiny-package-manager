@@ -1,7 +1,7 @@
 import * as fs from 'fs-extra'
 import * as yaml from 'js-yaml'
 import * as utils from './utils'
-import { Manifest } from './resolve'
+import type { Manifest } from './resolve'
 
 // Define the type of the lock tree.
 interface Lock {
@@ -43,14 +43,14 @@ const newLock: Lock = Object.create(null)
  * If that information is not existed in the lock, create it.
  * Otherwise, just update it.
  */
-export function updateOrCreate(name: string, info: object) {
+export function updateOrCreate(name: string, info: Lock[string]) {
   // Create it if that information is not existed in the lock.
   if (!newLock[name]) {
     newLock[name] = Object.create(null)
   }
 
   // Then update it.
-  Object.assign(newLock[name], info)
+  Object.assign(newLock[name]!, info)
 }
 
 /**
@@ -97,7 +97,7 @@ export async function writeLock() {
    */
   await fs.writeFile(
     './tiny-pm.yml',
-    yaml.safeDump(utils.sortKeys(newLock), { noRefs: true })
+    yaml.dump(utils.sortKeys(newLock), { noRefs: true })
   )
 }
 
@@ -109,7 +109,7 @@ export async function readLock() {
   if (await fs.pathExists('./tiny-pm.yml')) {
     Object.assign(
       oldLock,
-      yaml.safeLoad(await fs.readFile('./tiny-pm.yml', 'utf-8'))
+      yaml.load(await fs.readFile('./tiny-pm.yml', 'utf-8'))
     )
   }
 }

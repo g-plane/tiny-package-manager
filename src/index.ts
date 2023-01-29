@@ -1,6 +1,6 @@
 import * as fs from 'fs-extra'
 import findUp from 'find-up'
-import yargs from 'yargs'
+import type yargs from 'yargs'
 import * as utils from './utils'
 import list, { PackageJson } from './list'
 import install from './install'
@@ -49,14 +49,14 @@ export default async function (args: yargs.Arguments) {
        * At this time we don't specific version now, so set it empty.
        * And we will fill it later after fetched the information.
        */
-      additionalPackages.forEach(pkg => (root.devDependencies[pkg] = ''))
+      additionalPackages.forEach((pkg) => (root.devDependencies[pkg] = ''))
     } else {
       root.dependencies = root.dependencies || {}
       /*
        * At this time we don't specific version now, so set it empty.
        * And we will fill it later after fetched the information.
        */
-      additionalPackages.forEach(pkg => (root.dependencies[pkg] = ''))
+      additionalPackages.forEach((pkg) => (root.dependencies[pkg] = ''))
     }
   }
 
@@ -90,15 +90,13 @@ export default async function (args: yargs.Arguments) {
 
   // Install top level packages.
   await Promise.all(
-    Object
-      .entries(info.topLevel)
-      .map(([name, { url }]) => install(name, url))
+    Object.entries(info.topLevel).map(([name, { url }]) => install(name, url))
   )
 
   // Install packages which have conflicts.
   await Promise.all(
-    info.unsatisfied.map(
-      item => install(item.name, item.url, `/node_modules/${item.parent}`)
+    info.unsatisfied.map((item) =>
+      install(item.name, item.url, `/node_modules/${item.parent}`)
     )
   )
 
