@@ -29,17 +29,16 @@
     "fs-extra": "^11.1.0",
     "js-yaml": "^4.1.0",
     "log-update": "^4.0.0",
-    "node-fetch": "^2.6.8",
     "progress": "^2.0.3",
     "semver": "^7.3.8",
     "tar": "^6.1.13",
+    "undici": "^5.26.4",
     "yargs": "^17.6.2"
   },
   "devDependencies": {
     "@gplane/tsconfig": "^5.0.0",
     "@types/fs-extra": "^11.0.1",
     "@types/js-yaml": "^4.0.5",
-    "@types/node-fetch": "^2.6.2",
     "@types/progress": "^2.0.5",
     "@types/semver": "^7.3.13",
     "@types/tar": "^6.1.3",

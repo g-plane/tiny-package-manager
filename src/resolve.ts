@@ -1,4 +1,4 @@
-import fetch from 'node-fetch'
+import { request } from 'undici'
 
 // Just type definition and this can be ignored.
 export interface Manifest {
@@ -27,9 +27,9 @@ export default async function (name: string): Promise<Manifest> {
     return cached
   }
 
-  const response = await fetch(`${REGISTRY}${name}`)
+  const response = await request(`${REGISTRY}${name}`)
 
-  const json = (await response.json()) as
+  const json = (await response.body.json()) as
     | { error: string }
     | { versions: Manifest }
   if ('error' in json) {
