@@ -1,15 +1,15 @@
 import * as fs from 'fs-extra'
 import * as yaml from 'js-yaml'
-import * as utils from './utils'
 import type { Manifest } from './resolve'
+import * as utils from './utils'
 
 // Define the type of the lock tree.
 interface Lock {
   [index: string]: {
-    version: string
-    url: string
-    shasum: string
-    dependencies: { [dependency: string]: string }
+    version: string,
+    url: string,
+    shasum: string,
+    dependencies: { [dependency: string]: string },
   }
 }
 

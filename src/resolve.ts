@@ -3,8 +3,8 @@ import { request } from 'undici'
 // Just type definition and this can be ignored.
 export interface Manifest {
   [version: string]: {
-    dependencies?: { [dep: string]: string }
-    dist: { shasum: string; tarball: string }
+    dependencies?: { [dep: string]: string },
+    dist: { shasum: string, tarball: string },
   }
 }
 
@@ -17,7 +17,7 @@ const REGISTRY = process.env.REGISTRY || 'https://registry.npmjs.org/'
  */
 const cache: { [dep: string]: Manifest } = Object.create(null)
 
-export default async function (name: string): Promise<Manifest> {
+export default async function(name: string): Promise<Manifest> {
   /*
    * If the requested package manifest is existed in cache,
    * just return it directly.

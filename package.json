@@ -19,7 +19,7 @@
     "prepublishOnly": "npm run build",
     "lint": "eslint . -f=beauty --ext=.ts",
     "test": "npm run lint",
-    "fmt": "prettier --write ."
+    "fmt": "dprint fmt"
   },
   "engines": {
     "node": ">8"
@@ -45,10 +45,10 @@
     "@types/yargs": "^17.0.20",
     "@typescript-eslint/eslint-plugin": "^5.49.0",
     "@typescript-eslint/parser": "^5.49.0",
+    "dprint": "^0.42.5",
     "eslint": "^8.33.0",
     "eslint-config-gplane": "^6.2.2",
     "eslint-formatter-beauty": "^3.0.0",
-    "prettier": "^2.8.3",
     "typescript": "^4.9.4"
   }
 }

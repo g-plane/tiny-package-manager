@@ -1,16 +1,16 @@
 import * as semver from 'semver'
-import resolve from './resolve'
-import * as log from './log'
 import * as lock from './lock'
+import * as log from './log'
+import resolve from './resolve'
 
 interface DependenciesMap {
   [dependency: string]: string
 }
 // eslint-disable-next-line @typescript-eslint/no-type-alias
 type DependencyStack = Array<{
-  name: string
-  version: string
-  dependencies: { [dep: string]: string }
+  name: string,
+  version: string,
+  dependencies: { [dep: string]: string },
 }>
 export interface PackageJson {
   dependencies?: DependenciesMap
@@ -22,19 +22,19 @@ export interface PackageJson {
  * to avoid duplication.
  */
 const topLevel: {
-  [name: string]: { url: string; version: string }
+  [name: string]: { url: string, version: string },
 } = Object.create(null)
 
 /*
  * However, there may be dependencies conflicts,
  * so this variable is for that.
  */
-const unsatisfied: Array<{ name: string; parent: string; url: string }> = []
+const unsatisfied: Array<{ name: string, parent: string, url: string }> = []
 
 async function collectDeps(
   name: string,
   constraint: string,
-  stack: DependencyStack = []
+  stack: DependencyStack = [],
 ) {
   // Retrieve a single manifest by name from the lock.
   const fromLock = lock.getItem(name, constraint)
@@ -156,7 +156,7 @@ async function collectDeps(
 function checkStackDependencies(
   name: string,
   version: string,
-  stack: DependencyStack
+  stack: DependencyStack,
 ) {
   return stack.findIndex(({ dependencies }) => {
     const semverRange = dependencies[name]
@@ -189,7 +189,7 @@ function hasCirculation(name: string, range: string, stack: DependencyStack) {
  * To simplify this guide,
  * We intend to support `dependencies` and `devDependencies` fields only.
  */
-export default async function (rootManifest: PackageJson) {
+export default async function(rootManifest: PackageJson) {
   /*
    * For both production dependencies and development dependencies,
    * if the package name and the semantic version are returned,

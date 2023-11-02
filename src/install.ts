@@ -1,9 +1,9 @@
-import { request } from 'undici'
-import * as tar from 'tar'
 import * as fs from 'fs-extra'
+import * as tar from 'tar'
+import { request } from 'undici'
 import * as log from './log'
 
-export default async function (name: string, url: string, location = '') {
+export default async function(name: string, url: string, location = '') {
   // Prepare for the directory which is for installation
   const path = `${process.cwd()}${location}/node_modules/${name}`
 

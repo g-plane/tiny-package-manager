@@ -16,7 +16,7 @@ yargs
   .command(
     'install',
     'Install the dependencies.',
-    argv => {
+    (argv) => {
       argv.option('production', {
         type: 'boolean',
         description: 'Install production dependencies only.',
@@ -33,10 +33,11 @@ yargs
   .command(
     '*',
     'Install the dependencies.',
-    argv => argv.option('production', {
-      type: 'boolean',
-      description: 'Install production dependencies only.',
-    }),
+    (argv) =>
+      argv.option('production', {
+        type: 'boolean',
+        description: 'Install production dependencies only.',
+      }),
     pm
   )
   .parse()

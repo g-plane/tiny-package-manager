@@ -1,11 +1,11 @@
-import * as fs from 'fs-extra'
 import findUp from 'find-up'
+import * as fs from 'fs-extra'
 import type yargs from 'yargs'
-import * as utils from './utils'
-import list, { PackageJson } from './list'
 import install from './install'
-import * as log from './log'
+import list, { PackageJson } from './list'
 import * as lock from './lock'
+import * as log from './log'
+import * as utils from './utils'
 
 /**
  * Welcome to learning about how to build a package manager.
@@ -31,7 +31,7 @@ import * as lock from './lock'
  * because I split them into different modules and files for better management.
  */
 
-export default async function (args: yargs.Arguments) {
+export default async function(args: yargs.Arguments) {
   // Find and read the `package.json`.
   const jsonPath = (await findUp('package.json'))!
   const root = await fs.readJson(jsonPath)
