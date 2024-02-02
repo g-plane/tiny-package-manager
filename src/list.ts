@@ -201,9 +201,7 @@ export default async function(rootManifest: PackageJson) {
   if (rootManifest.dependencies) {
     ;(
       await Promise.all(
-        Object.entries(rootManifest.dependencies).map((pair) =>
-          collectDeps(...pair)
-        )
+        Object.entries(rootManifest.dependencies).map((pair) => collectDeps(...pair))
       )
     )
       .filter(Boolean)
@@ -216,9 +214,7 @@ export default async function(rootManifest: PackageJson) {
   if (rootManifest.devDependencies) {
     ;(
       await Promise.all(
-        Object.entries(rootManifest.devDependencies).map((pair) =>
-          collectDeps(...pair)
-        )
+        Object.entries(rootManifest.devDependencies).map((pair) => collectDeps(...pair))
       )
     )
       .filter(Boolean)

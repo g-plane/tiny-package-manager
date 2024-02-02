@@ -45,7 +45,7 @@
     "@types/yargs": "^17.0.20",
     "@typescript-eslint/eslint-plugin": "^5.49.0",
     "@typescript-eslint/parser": "^5.49.0",
-    "dprint": "^0.42.5",
+    "dprint": "^0.45.0",
     "eslint": "^8.33.0",
     "eslint-config-gplane": "^6.2.2",
     "eslint-formatter-beauty": "^3.0.0",

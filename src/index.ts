@@ -95,9 +95,7 @@ export default async function(args: yargs.Arguments) {
 
   // Install packages which have conflicts.
   await Promise.all(
-    info.unsatisfied.map((item) =>
-      install(item.name, item.url, `/node_modules/${item.parent}`)
-    )
+    info.unsatisfied.map((item) => install(item.name, item.url, `/node_modules/${item.parent}`))
   )
 
   beautifyPackageJson(root)
